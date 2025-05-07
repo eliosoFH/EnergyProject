@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.TextField?>
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="337.0" prefWidth="267.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.frontend.GUIController">
     <children>
@@ -13,11 +14,19 @@
                 <Insets top="10.0" />
             </VBox.margin>
         </Button>
+
+        <TextField fx:id="tfId" promptText="Gib ID ein">
+            <VBox.margin>
+                <Insets top="10.0" />
+            </VBox.margin>
+        </TextField>
+
         <Button fx:id="historical" mnemonicParsing="false" onAction="#onHistoricalClick" text="Historical data">
             <VBox.margin>
                 <Insets top="10.0" />
             </VBox.margin>
         </Button>
+
         <Label fx:id="labelResult" text="Result">
             <VBox.margin>
                 <Insets top="10.0" />
