@@ -5,14 +5,11 @@ import com.example.BackEndAPI.dto.Energy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class EnergyRepository {
-    private Map<Integer, Energy> energieByTime = new HashMap<>(Map.of(
+    private final Map<Integer, Energy> energieByTime = new HashMap<>(Map.of(
             1, new Energy(1, LocalDateTime.of(2024, 1, 25, 15, 30), 14),
             2, new Energy(2, LocalDateTime.of(2024, 2, 25, 15, 30), 1241),
             3, new Energy(3, LocalDateTime.of(2024, 3, 25, 15, 30), 1240),
@@ -25,7 +22,11 @@ public class EnergyRepository {
         return energieByTime.get(maxKey);
     }
 
-    public Energy getHistoric(int index) {
-        return energieByTime.get(index);
+    public List<Energy> getHistoric(LocalDateTime start, LocalDateTime end) {
+        return energieByTime.values().stream()
+                .filter(e -> !e.getTime().isBefore(start) && !e.getTime().isAfter(end))
+                .sorted(Comparator.comparing(Energy::getTime))
+                .toList();
     }
+
 }
