@@ -1,6 +1,7 @@
 package com.example.frontend;
 
 import com.example.frontend.dto.Energy;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -51,6 +52,8 @@ public class GUIController {
                     HttpResponse.BodyHandlers.ofString()
             );
 
+            System.out.println(response);
+
             ObjectMapper om = new ObjectMapper();
             om.registerModule(new JavaTimeModule());
             Energy daten = om.readValue(response.body(), Energy.class);
@@ -76,13 +79,18 @@ public class GUIController {
                     .GET()
                     .build();
 
+
+
             HttpResponse<String> response = client.send(
                     request,
                     HttpResponse.BodyHandlers.ofString()
             );
 
+            System.out.println(response);
+
             ObjectMapper om = new ObjectMapper();
             om.registerModule(new JavaTimeModule());
+            om.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
             List<Energy> datenListe = om.readValue(response.body(), new TypeReference<List<Energy>>() {});
 
