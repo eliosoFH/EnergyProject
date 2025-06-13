@@ -9,23 +9,30 @@ import java.util.*;
 
 @Service
 public class EnergyRepository {
-    private final Map<Integer, Energy> energieByTime = new HashMap<>(Map.of(
-            1, new Energy(1, LocalDateTime.of(2024, 1, 25, 15, 30), 14),
-            2, new Energy(2, LocalDateTime.of(2024, 2, 25, 15, 30), 1241),
-            3, new Energy(3, LocalDateTime.of(2024, 3, 25, 15, 30), 1240),
-            4, new Energy(4, LocalDateTime.of(2024, 4, 25, 15, 30), 1040),
-            5, new Energy(5, LocalDateTime.now(), 420)
+    private final Map<LocalDateTime, Energy> energieByHour = new HashMap<>(Map.of(
+            LocalDateTime.of(2024, 1, 25, 15, 0),
+            new Energy(LocalDateTime.of(2024, 1, 25, 15, 0), 10.5, 8.2, 1.1),
+            LocalDateTime.of(2024, 2, 25, 14, 0),
+            new Energy(LocalDateTime.of(2024, 2, 25, 14, 0), 12.0, 10.0, 0.8),
+            LocalDateTime.of(2024, 3, 25, 13, 0),
+            new Energy(LocalDateTime.of(2024, 3, 25, 13, 0), 9.3, 9.5, 1.2),
+            LocalDateTime.of(2024, 4, 25, 12, 0),
+            new Energy(LocalDateTime.of(2024, 4, 25, 12, 0), 15.1, 14.0, 0.0),
+            LocalDateTime.now().withMinute(0).withSecond(0).withNano(0),
+            new Energy(LocalDateTime.now().withMinute(0).withSecond(0).withNano(0), 20.0, 20.0, 2.0)
     ));
 
+
     public Energy getCurrent() {
-        int maxKey = Collections.max(energieByTime.keySet());
-        return energieByTime.get(maxKey);
+        LocalDateTime nowHour = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
+        return energieByHour.getOrDefault(nowHour, new Energy(nowHour, 0, 0, 0));
     }
 
+
     public List<Energy> getHistoric(LocalDateTime start, LocalDateTime end) {
-        return energieByTime.values().stream()
-                .filter(e -> !e.getTime().isBefore(start) && !e.getTime().isAfter(end))
-                .sorted(Comparator.comparing(Energy::getTime))
+        return energieByHour.values().stream()
+                .filter(e -> !e.getHour().isBefore(start) && !e.getHour().isAfter(end))
+                .sorted(Comparator.comparing(Energy::getHour))
                 .toList();
     }
 

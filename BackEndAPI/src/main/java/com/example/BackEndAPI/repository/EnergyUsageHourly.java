@@ -1,23 +1,26 @@
-package com.example.BackEndAPI.dto;
+package com.example.BackEndAPI.repository;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-public class Energy {
+@Entity
+@Table(name = "energy_usage_hourly")
+public class EnergyUsageHourly {
+
+    // @ID für PK
+    @Id
+    @Column(name = "hour", nullable = false)
     private LocalDateTime hour;
+
+    @Column(name = "community_produced", nullable = false)
     private double communityProduced;
+
+    @Column(name = "community_used", nullable = false)
     private double communityUsed;
+
+    @Column(name = "grid_used", nullable = false)
     private double gridUsed;
 
-    public Energy() {}
-
-    public Energy(LocalDateTime hour, double communityProduced, double communityUsed, double gridUsed) {
-        this.hour = hour;
-        this.communityProduced = communityProduced;
-        this.communityUsed = communityUsed;
-        this.gridUsed = gridUsed;
-    }
-
-    // Getter + Setter
     public LocalDateTime getHour() {
         return hour;
     }

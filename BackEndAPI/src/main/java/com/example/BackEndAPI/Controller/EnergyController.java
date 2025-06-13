@@ -34,6 +34,4 @@ public class EnergyController {
 
         return energyRepository.getHistoric(start, end);
     }
-
-
 }
