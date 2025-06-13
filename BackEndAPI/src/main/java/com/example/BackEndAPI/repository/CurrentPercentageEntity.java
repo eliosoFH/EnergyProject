@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "current_percentage")
-public class CurrentPercentage {
+public class CurrentPercentageEntity {
 
     // @ID für PK
     @Id

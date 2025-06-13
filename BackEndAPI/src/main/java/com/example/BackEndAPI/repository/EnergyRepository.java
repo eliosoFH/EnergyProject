@@ -22,12 +22,10 @@ public class EnergyRepository {
             new Energy(LocalDateTime.now().withMinute(0).withSecond(0).withNano(0), 20.0, 20.0, 2.0)
     ));
 
-
     public Energy getCurrent() {
         LocalDateTime nowHour = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
         return energieByHour.getOrDefault(nowHour, new Energy(nowHour, 0, 0, 0));
     }
-
 
     public List<Energy> getHistoric(LocalDateTime start, LocalDateTime end) {
         return energieByHour.values().stream()

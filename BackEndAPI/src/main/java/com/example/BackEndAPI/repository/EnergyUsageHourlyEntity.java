@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "energy_usage_hourly")
-public class EnergyUsageHourly {
+public class EnergyUsageHourlyEntity {
 
     // @ID für PK
     @Id
