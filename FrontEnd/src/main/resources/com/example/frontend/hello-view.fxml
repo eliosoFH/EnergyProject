@@ -25,7 +25,7 @@
          </children>
       </HBox>
       <Line endX="100.0" startX="-100.0" stroke="#a1a1a1" />
-        <Button fx:id="currentRefresh" mnemonicParsing="false" onAction="#onCurrentClick" text="refresh">
+        <Button fx:id="currentRefresh" mnemonicParsing="false" onAction="#getCurrent" text="refresh">
             <VBox.margin>
                 <Insets top="10.0" />
             </VBox.margin>
@@ -48,7 +48,7 @@
          </children>
       </HBox>
 
-        <Button fx:id="historicalRefresh" mnemonicParsing="false" onAction="#onHistoricalClick" text="show data">
+        <Button fx:id="historicalRefresh" mnemonicParsing="false" onAction="#getHistorical" text="show data">
             <VBox.margin>
                 <Insets top="10.0" />
             </VBox.margin>
