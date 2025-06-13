@@ -2,35 +2,82 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
 
-<?import javafx.scene.control.TextField?>
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="337.0" prefWidth="267.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.example.frontend.GUIController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="277.0" prefWidth="355.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.frontend.GUIController">
     <children>
-        <Button fx:id="current" mnemonicParsing="false" onAction="#onCurrentClick" text="Current hour">
+      <HBox prefHeight="32.0" prefWidth="388.0">
+         <children>
+            <Label prefHeight="35.0" prefWidth="124.0" text="Community Pool" />
+            <Label fx:id="currentCommunityUsed" prefHeight="37.0" prefWidth="117.0" text=" % used" />
+         </children>
+      </HBox>
+      <Line endX="100.0" startX="-100.0" stroke="#a1a1a1" />
+      <HBox prefHeight="32.0" prefWidth="388.0">
+         <children>
+            <Label prefHeight="35.0" prefWidth="124.0" text="Grid Portion" />
+            <Label fx:id="currentGridPortion" prefHeight="37.0" prefWidth="117.0" text=" %" />
+         </children>
+      </HBox>
+      <Line endX="100.0" startX="-100.0" stroke="#a1a1a1" />
+        <Button fx:id="currentRefresh" mnemonicParsing="false" onAction="#onCurrentClick" text="refresh">
             <VBox.margin>
                 <Insets top="10.0" />
             </VBox.margin>
         </Button>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a1a1a1" height="3.0" stroke="TRANSPARENT" strokeType="INSIDE" width="344.0">
+         <VBox.margin>
+            <Insets bottom="5.0" top="5.0" />
+         </VBox.margin>
+      </Rectangle>
+      <HBox prefHeight="32.0" prefWidth="388.0">
+         <children>
+            <Label prefHeight="35.0" prefWidth="124.0" text="Start" />
+            <DatePicker fx:id="start" />
+         </children>
+      </HBox>
+      <HBox prefHeight="32.0" prefWidth="388.0">
+         <children>
+            <Label prefHeight="35.0" prefWidth="124.0" text="End" />
+            <DatePicker fx:id="end" />
+         </children>
+      </HBox>
 
-        <TextField fx:id="tfId" promptText="Gib ID ein">
-            <VBox.margin>
-                <Insets top="10.0" />
-            </VBox.margin>
-        </TextField>
-
-        <Button fx:id="historical" mnemonicParsing="false" onAction="#onHistoricalClick" text="Historical data">
+        <Button fx:id="historicalRefresh" mnemonicParsing="false" onAction="#onHistoricalClick" text="show data">
             <VBox.margin>
                 <Insets top="10.0" />
             </VBox.margin>
         </Button>
-
-        <Label fx:id="labelResult" text="Result">
-            <VBox.margin>
-                <Insets top="10.0" />
-            </VBox.margin>
-        </Label>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a1a1a1" height="1.0" stroke="TRANSPARENT" strokeType="INSIDE" width="346.0">
+         <VBox.margin>
+            <Insets bottom="5.0" top="5.0" />
+         </VBox.margin>
+      </Rectangle>
+      <HBox prefHeight="32.0" prefWidth="388.0">
+         <children>
+            <Label prefHeight="35.0" prefWidth="124.0" text="Community produced" />
+            <Label fx:id="historicCommunityProduced" prefHeight="37.0" prefWidth="117.0" text=" kWh" />
+         </children>
+      </HBox>
+      <HBox prefHeight="32.0" prefWidth="388.0">
+         <children>
+            <Label prefHeight="35.0" prefWidth="124.0" text="Community used" />
+            <Label fx:id="historicCommunityUsed" prefHeight="37.0" prefWidth="117.0" text=" kWh" />
+         </children>
+      </HBox>
+      <HBox prefHeight="33.0" prefWidth="388.0">
+         <children>
+            <Label prefHeight="35.0" prefWidth="124.0" text="Grid used" />
+            <Label fx:id="historicGridUsed" prefHeight="37.0" prefWidth="117.0" text=" kWh" />
+         </children>
+      </HBox>
     </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
 </VBox>

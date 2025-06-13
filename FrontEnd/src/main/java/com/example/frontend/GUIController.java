@@ -2,6 +2,8 @@ package com.example.frontend;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import java.net.URI;
@@ -16,6 +18,14 @@ public class GUIController {
     @FXML
     public TextField tfId;
     public Label labelResult;
+    public Label currentCommunityUsed;
+    public Label currentGridPortion;
+    public Button currentRefresh;
+    public DatePicker start;
+    public DatePicker end;
+    public Label historicCommunityProduced;
+    public Label historicCommunityUsed;
+    public Label historicGridUsed;
 
 
     public void onCurrentClick(ActionEvent actionEvent) {
