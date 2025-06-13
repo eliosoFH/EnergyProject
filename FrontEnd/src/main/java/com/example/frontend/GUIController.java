@@ -1,5 +1,6 @@
 package com.example.frontend;
 
+import com.example.frontend.dto.Energy;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -11,13 +12,11 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import javafx.application.Platform;
-
-import java.net.URI;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GUIController {
     @FXML
-    public TextField tfId;
-    public Label labelResult;
     public Label currentCommunityUsed;
     public Label currentGridPortion;
     public Button currentRefresh;
@@ -28,7 +27,7 @@ public class GUIController {
     public Label historicGridUsed;
 
 
-    public void onCurrentClick(ActionEvent actionEvent) {
+    public void getCurrent(ActionEvent actionEvent) {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
@@ -36,39 +35,25 @@ public class GUIController {
                     .GET()
                     .build();
 
-            client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                    .thenApply(HttpResponse::body)
-                    .thenAccept(response -> {
-                        Platform.runLater(() -> labelResult.setText("Current: " + response));
-                    });
+            HttpResponse<String> response;
+            response = client.send(
+                    request,
+                    HttpResponse.BodyHandlers.ofString()
+            );
+            ObjectMapper om = new ObjectMapper();
+            Energy daten = om.readValue(response.body(), Energy.class);
+
+            currentCommunityUsed.setText(String.valueOf(daten.getCommunityUsed()));
+            currentGridPortion.setText((String.valueOf(daten.getGridUsed())));
         } catch (Exception e) {
             e.printStackTrace();
-            labelResult.setText("Fehler beim Laden!");
+            currentCommunityUsed.setText("Fehler beim Laden!");
+            currentGridPortion.setText("Fehler beim Laden!");
         }
     }
 
-    public void onHistoricalClick(ActionEvent actionEvent) {
-        String id = tfId.getText(); // z. B. „2“
-        if (id == null || id.isEmpty()) {
-            labelResult.setText("Bitte ID eingeben");
-            return;
-        }
-
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/energy/historic/" + id))
-                    .GET()
-                    .build();
-
-            client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                    .thenApply(HttpResponse::body)
-                    .thenAccept(response -> {
-                        Platform.runLater(() -> labelResult.setText("Historic: " + response));
-                    });
-        } catch (Exception e) {
-            e.printStackTrace();
-            labelResult.setText("Fehler beim Laden!");
-        }
+    public void getHistorical(ActionEvent actionEvent) {
     }
+
+
 }
