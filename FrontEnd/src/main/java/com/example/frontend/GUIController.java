@@ -14,6 +14,7 @@ import java.net.http.HttpResponse;
 import javafx.application.Platform;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class GUIController {
     @FXML
@@ -40,11 +41,14 @@ public class GUIController {
                     request,
                     HttpResponse.BodyHandlers.ofString()
             );
+
             ObjectMapper om = new ObjectMapper();
+            om.registerModule(new JavaTimeModule());
             Energy daten = om.readValue(response.body(), Energy.class);
 
             currentCommunityUsed.setText(String.valueOf(daten.getCommunityUsed()));
             currentGridPortion.setText((String.valueOf(daten.getGridUsed())));
+
         } catch (Exception e) {
             e.printStackTrace();
             currentCommunityUsed.setText("Fehler beim Laden!");
