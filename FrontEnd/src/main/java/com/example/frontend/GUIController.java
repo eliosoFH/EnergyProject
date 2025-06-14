@@ -58,8 +58,10 @@ public class GUIController {
             om.registerModule(new JavaTimeModule());
             Energy daten = om.readValue(response.body(), Energy.class);
 
-            currentCommunityUsed.setText(String.valueOf(daten.getCommunityUsed()));
-            currentGridPortion.setText((String.valueOf(daten.getGridUsed())));
+            double gridPercentage = (daten.getGridUsed()/(daten.getCommunityUsed()+ daten.getGridUsed()))*100;
+
+            currentCommunityUsed.setText(String.valueOf(daten.getCommunityUsed()) + " kWh");
+            currentGridPortion.setText(String.format("%.2f", gridPercentage) + " %");
 
         } catch (Exception e) {
             e.printStackTrace();
