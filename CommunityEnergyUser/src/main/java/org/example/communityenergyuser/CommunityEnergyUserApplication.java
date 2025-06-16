@@ -16,7 +16,7 @@ public class CommunityEnergyUserApplication {
 
     @Bean
     public Queue userQueue() {
-        return new Queue("com_energy_user", true); // durable = true
+        return new Queue("com_energy_producer", true); // durable = true (dami
     }
 
 }
