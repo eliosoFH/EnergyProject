@@ -92,6 +92,7 @@ public class MessageListener {
         energyStats.setGritUsed(energyStats.getCommunityUsed()- energyStats.getCommunityProduced());
         EnergyUsageHourlyEntity sql = new EnergyUsageHourlyEntity(energyStats.getTimestamp().plusHours(1), energyStats.getCommunityUsed(), energyStats.getCommunityProduced());
         repository.save(sql);
+        System.out.println("jallo");
 
         try {
             // send energyStats to queue
@@ -102,8 +103,10 @@ public class MessageListener {
             messageMap.put("timestamp", energyStats.getTimestamp().plusHours(1));
 
             ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
             String messageJson = objectMapper.writeValueAsString(messageMap);
-            rabbit.convertAndSend("update");
+            rabbit.convertAndSend("update", messageJson);
+            System.out.println("hallo");
 
         } catch (Exception e) {
             System.out.println(e);
