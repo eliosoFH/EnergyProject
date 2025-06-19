@@ -57,6 +57,9 @@ public class EnergyUsageHourlyEntity {
         this.gridUsed = gridUsed;
     }
 
+    public EnergyUsageHourlyEntity() {
+    }
+
     public EnergyUsageHourlyEntity(LocalDateTime hour, double communityUsed, double communityProduced) {
         this.hour = hour;
         this.communityUsed = communityUsed;

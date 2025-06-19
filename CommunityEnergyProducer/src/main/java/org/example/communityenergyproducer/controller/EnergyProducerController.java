@@ -70,7 +70,7 @@ public class EnergyProducerController {
             Map<String, Object> messageMap = new HashMap<>();
             messageMap.put("type", "PRODUCER");
             messageMap.put("association", "COMMUNITY");
-            messageMap.put("kwh", production);
+            messageMap.put("produced", production);
             messageMap.put("datetime", now.toString());
 
             String messageJson = objectMapper.writeValueAsString(messageMap);

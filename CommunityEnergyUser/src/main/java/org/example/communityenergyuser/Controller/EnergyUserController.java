@@ -31,7 +31,7 @@ public class EnergyUserController {
         Map<String, Object> messageMap = new HashMap<>();
         messageMap.put("type", "USER");
         messageMap.put("association", "COMMUNITY");
-        messageMap.put("kwh", baseUsage);
+        messageMap.put("used", baseUsage);
         messageMap.put("datetime", LocalDateTime.now(ZoneId.of("Europe/Vienna")).toString());
 
 
