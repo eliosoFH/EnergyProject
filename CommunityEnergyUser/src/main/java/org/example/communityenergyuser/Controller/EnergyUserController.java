@@ -30,9 +30,10 @@ public class EnergyUserController {
 
         Map<String, Object> messageMap = new HashMap<>();
         messageMap.put("type", "USER");
-        messageMap.put("value", baseUsage);
-        messageMap.put("timestamp", LocalDateTime.now(ZoneId.of("Europe/Vienna")).toString());
         messageMap.put("association", "COMMUNITY");
+        messageMap.put("kwh", baseUsage);
+        messageMap.put("datetime", LocalDateTime.now(ZoneId.of("Europe/Vienna")).toString());
+
 
         String messageJson = objectMapper.writeValueAsString(messageMap);
         rabbit.convertAndSend("com_energy_user", messageJson);

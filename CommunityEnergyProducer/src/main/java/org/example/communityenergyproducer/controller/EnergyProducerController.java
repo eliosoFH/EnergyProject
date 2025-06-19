@@ -1,11 +1,13 @@
 package org.example.communityenergyproducer.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.*;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -16,6 +18,7 @@ public class EnergyProducerController {
     private final RabbitTemplate rabbit;
     private final RestTemplate rest = new RestTemplate();
     private final Random random = new Random();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public EnergyProducerController(RabbitTemplate rabbit) {
         this.rabbit = rabbit;
@@ -63,10 +66,17 @@ public class EnergyProducerController {
                 production = weatherFactor * (0.3 + random.nextDouble() * 0.5); // 0.3–0.8 kWh
             }
 
-            String message = String.format("%.2f", production); // 2 Nachkommastellen
-            rabbit.convertAndSend("com_energy_producer", message);
+            // Nachricht als JSON zusammenbauen
+            Map<String, Object> messageMap = new HashMap<>();
+            messageMap.put("type", "PRODUCER");
+            messageMap.put("association", "COMMUNITY");
+            messageMap.put("kwh", production);
+            messageMap.put("datetime", now.toString());
 
-            System.out.println("Sent production: " + message + " kWh (WCode: " + weatherCode + ")");
+            String messageJson = objectMapper.writeValueAsString(messageMap);
+            rabbit.convertAndSend("com_energy_producer", messageJson);
+
+            System.out.println("Sent production: " + messageJson + " (WCode: " + weatherCode + ")");
 
         } catch (Exception e) {
             System.err.println("Senden fehlgeschlagen: " + e.getMessage());
