@@ -1,9 +1,16 @@
 package org.example.communityenergyuser.Controller;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 @Service
@@ -17,11 +24,19 @@ public class EnergyUserController {
     }
 
     @Scheduled(fixedRate = 5000) // alle 5 Sekunden
-    public void sendRandomUsage() {
+    public void sendRandomUsage() throws JsonProcessingException {
         double baseUsage = generateUsageDependingOnTime();
-        String message = String.format("%.2f", baseUsage); // baseUsage auf zwei Nachkommastellen
-        rabbit.convertAndSend("com_energy_user", message);
-        System.out.println("Sent usage: " + message + " kWh");
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Map<String, Object> messageMap = new HashMap<>();
+        messageMap.put("type", "USER");
+        messageMap.put("value", baseUsage);
+        messageMap.put("timestamp", LocalDateTime.now(ZoneId.of("Europe/Vienna")).toString());
+        messageMap.put("association", "COMMUNITY");
+
+        String messageJson = objectMapper.writeValueAsString(messageMap);
+        rabbit.convertAndSend("com_energy_user", messageJson);
+        System.out.println("Sent usage: " + messageJson);
     }
 
     private double generateUsageDependingOnTime() {
