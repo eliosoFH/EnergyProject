@@ -16,7 +16,7 @@ public class MessageListener {
         this.repository = repository;
     }
 
-    @RabbitListener(queues = "producer_queue")
+    @RabbitListener(queues = "com_energy_producer")
     public void receiveProducer(String message) {
         String[] parts = message.split(";");
         String hourString = parts[1];
@@ -29,7 +29,7 @@ public class MessageListener {
         repository.save(entity);
     }
 
-    @RabbitListener(queues = "user_queue")
+    @RabbitListener(queues = "com_energy_user")
     public void receiveUser(String message) {
         String[] parts = message.split(";");
         String hourString = parts[1];

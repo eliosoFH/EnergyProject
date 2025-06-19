@@ -14,17 +14,17 @@ public class UsageServiceApplication {
 
 	@Bean
 	public Queue userQueue() {
-		return new Queue("user_queue", true); // durable = true
+		return new Queue("update", true); // durable = true
 	}
 
 	@Bean
 	public Queue producerQueue() {
-		return new Queue("producer_queue", true);
+		return new Queue("com_energy_producer", true);
 	}
 
 	@Bean
 	public Queue updateQueue() {
-		return new Queue("update_queue", true);
+		return new Queue("com_energy_user", true);
 	}
 
 }
