@@ -1,4 +1,4 @@
-package org.example.usageservice.message;
+package org.example.usageservice.dto;
 
 import java.time.LocalDateTime;
 
