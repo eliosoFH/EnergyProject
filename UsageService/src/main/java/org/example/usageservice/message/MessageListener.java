@@ -1,6 +1,5 @@
 package org.example.usageservice.message;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.example.usageservice.dto.EnergyStats;
 import org.example.usageservice.repository.EnergyUsageHourlyEntity;
@@ -11,8 +10,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-import java.sql.SQLOutput;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +51,7 @@ public class MessageListener {
                 excessProduced += data.getCommunityProduced();
                 producedHourOver = true;
                 if (usedHourOver && producedHourOver) {
-                    postDB();
+                    dbAndRabbit();
                 }
             }
 
@@ -79,7 +76,7 @@ public class MessageListener {
                 excessUsed += data.getCommunityUsed();
                 usedHourOver = true;
                 if (usedHourOver && producedHourOver) {
-                    postDB();
+                    dbAndRabbit();
                 }
             }
         } catch (Exception e) {
@@ -88,10 +85,10 @@ public class MessageListener {
         System.out.println(energyStats);
     }
 
-    private void postDB() {
-        EnergyUsageHourlyEntity sql = new EnergyUsageHourlyEntity(energyStats.getTimestamp().plusHours(1), energyStats.getCommunityUsed(), energyStats.getCommunityProduced());
+    private void dbAndRabbit() {
+        energyStats.setGritUsed(energyStats.getCommunityUsed()-energyStats.getCommunityProduced());
+        EnergyUsageHourlyEntity sql = new EnergyUsageHourlyEntity(energyStats.getTimestamp().plusHours(1), energyStats.getCommunityUsed(), energyStats.getCommunityProduced(), energyStats.getGritUsed());
         repository.save(sql);
-        System.out.println("jallo");
 
         try {
             // send energyStats to queue
@@ -105,7 +102,6 @@ public class MessageListener {
             objectMapper.registerModule(new JavaTimeModule());
             String messageJson = objectMapper.writeValueAsString(messageMap);
             rabbit.convertAndSend("update", messageJson);
-            System.out.println("hallo");
 
         } catch (Exception e) {
             System.out.println(e);

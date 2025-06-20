@@ -60,11 +60,11 @@ public class EnergyUsageHourlyEntity {
     public EnergyUsageHourlyEntity() {
     }
 
-    public EnergyUsageHourlyEntity(LocalDateTime hour, double communityUsed, double communityProduced) {
+    public EnergyUsageHourlyEntity(LocalDateTime hour, double communityUsed, double communityProduced, double gridUsed) {
         this.hour = hour;
         this.communityUsed = communityUsed;
         this.communityProduced = communityProduced;
-        this.gridUsed = 0.0; // Optional, falls du es explizit setzen willst
+        this.gridUsed = gridUsed;
     }
 
 }
