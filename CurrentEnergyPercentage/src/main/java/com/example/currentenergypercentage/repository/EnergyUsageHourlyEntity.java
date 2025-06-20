@@ -1,4 +1,4 @@
-package org.example.usageservice.repository;
+package com.example.currentenergypercentage.repository;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -64,7 +64,7 @@ public class EnergyUsageHourlyEntity {
         this.hour = hour;
         this.communityUsed = communityUsed;
         this.communityProduced = communityProduced;
-        this.gridUsed = communityUsed-communityProduced;
+        this.gridUsed = 0.0; // Optional, falls du es explizit setzen willst
     }
 
 }

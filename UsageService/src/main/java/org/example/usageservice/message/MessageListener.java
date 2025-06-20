@@ -89,7 +89,6 @@ public class MessageListener {
     }
 
     private void postDB() {
-        energyStats.setGritUsed(energyStats.getCommunityUsed()- energyStats.getCommunityProduced());
         EnergyUsageHourlyEntity sql = new EnergyUsageHourlyEntity(energyStats.getTimestamp().plusHours(1), energyStats.getCommunityUsed(), energyStats.getCommunityProduced());
         repository.save(sql);
         System.out.println("jallo");
