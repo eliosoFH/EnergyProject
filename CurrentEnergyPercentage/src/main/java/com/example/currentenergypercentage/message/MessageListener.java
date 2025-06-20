@@ -26,10 +26,10 @@ public class MessageListener {
         try {
             EnergyStats data = objectMapper.readValue(message, EnergyStats.class);
 
-            double community_used = data.getCommunityUsed()/data.getCommunityProduced()*100;
+            double community_depleted = data.getCommunityUsed()/data.getCommunityProduced()*100;
             double grid_portion = data.getGritUsed()/data.getCommunityUsed();
 
-            CurrentPercentageEntity sql = new CurrentPercentageEntity(data.getTimestamp(), community_used, grid_portion);
+            CurrentPercentageEntity sql = new CurrentPercentageEntity(data.getTimestamp(), community_depleted, grid_portion);
             repository.save(sql);
 
         } catch (Exception e) {

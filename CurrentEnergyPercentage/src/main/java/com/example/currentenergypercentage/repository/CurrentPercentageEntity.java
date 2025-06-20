@@ -18,7 +18,7 @@ public class CurrentPercentageEntity {
     private double community_depleted;
 
     @Column
-    private double community_used;
+    private double grid_portion;
 
     public LocalDateTime getHour() {
         return hour;
@@ -36,18 +36,18 @@ public class CurrentPercentageEntity {
         this.community_depleted = community_depleted;
     }
 
-    public double getCommunity_used() {
-        return community_used;
+    public double getGrid_portion() {
+        return grid_portion;
     }
 
-    public void setCommunity_used(double community_used) {
-        this.community_used = community_used;
+    public void setGrid_portion(double community_used) {
+        this.grid_portion = community_used;
     }
 
     public CurrentPercentageEntity() {}
     public CurrentPercentageEntity(LocalDateTime hour, double community_depleted, double community_used) {
         this.hour = hour;
         this.community_depleted = community_depleted;
-        this.community_used = community_used;
+        this.grid_portion = community_used;
     }
 }
