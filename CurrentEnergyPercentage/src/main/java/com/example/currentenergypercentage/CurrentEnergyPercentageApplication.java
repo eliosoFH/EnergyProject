@@ -13,6 +13,6 @@ public class CurrentEnergyPercentageApplication {
     }
     @Bean
     public Queue updateQueue() {
-        return new Queue("com_energy_user", true);
+        return new Queue("update", true);
     }
 }

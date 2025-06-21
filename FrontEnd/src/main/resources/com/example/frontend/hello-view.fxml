@@ -14,8 +14,8 @@
     <children>
       <HBox prefHeight="32.0" prefWidth="388.0">
          <children>
-            <Label prefHeight="35.0" prefWidth="124.0" text="Community Pool" />
-            <Label fx:id="currentCommunityUsed" prefHeight="37.0" prefWidth="117.0" text=" % used" />
+            <Label prefHeight="35.0" prefWidth="124.0" text="Community Depleted" />
+            <Label fx:id="currentCommunityUsed" prefHeight="37.0" prefWidth="117.0" text=" %" />
          </children>
       </HBox>
       <Line endX="100.0" startX="-100.0" stroke="#a1a1a1" />

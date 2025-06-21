@@ -50,4 +50,13 @@ public class CurrentPercentageEntity {
         this.community_depleted = community_depleted;
         this.grid_portion = community_used;
     }
+
+    @Override
+    public String toString() {
+        return "CurrentPercentageEntity{" +
+                "hour=" + hour +
+                ", community_depleted=" + community_depleted +
+                ", grid_portion=" + grid_portion +
+                '}';
+    }
 }

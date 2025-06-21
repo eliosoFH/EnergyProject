@@ -6,13 +6,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EnergyStats {
+public class EnergyUsageHourly {
     @JsonProperty("produced")
     private double communityProduced;
     @JsonProperty("used")
     private double communityUsed;
+    @JsonProperty("grid")
     private double gritUsed;
-    @JsonProperty("datetime")
+    @JsonProperty("timestamp")
     private LocalDateTime timestamp;
 
     public LocalDateTime getTimestamp() {

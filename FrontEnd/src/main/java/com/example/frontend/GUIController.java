@@ -1,6 +1,7 @@
 package com.example.frontend;
 
-import com.example.frontend.dto.Energy;
+import com.example.frontend.dto.CurrentPercentage;
+import com.example.frontend.dto.EnergyUsageHourly;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,10 +11,10 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javafx.application.Platform;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -35,6 +36,8 @@ public class GUIController {
     public void initialize() {
         startHour.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 0));
         endHour.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 23));
+        start.setValue(LocalDate.now());
+        end.setValue(LocalDate.now());
     }
 
 
@@ -56,12 +59,10 @@ public class GUIController {
 
             ObjectMapper om = new ObjectMapper();
             om.registerModule(new JavaTimeModule());
-            Energy daten = om.readValue(response.body(), Energy.class);
+            CurrentPercentage data = om.readValue(response.body(), CurrentPercentage.class);
 
-            double gridPercentage = (daten.getGridUsed()/(daten.getCommunityUsed()+ daten.getGridUsed()))*100;
-
-            currentCommunityUsed.setText(String.valueOf(daten.getCommunityUsed()) + " kWh");
-            currentGridPortion.setText(String.format("%.2f", gridPercentage) + " %");
+            currentCommunityUsed.setText(String.format("%.2f", data.getCommunityDepleted()) + " %");
+            currentGridPortion.setText(String.format("%.2f", data.getGridPortion()) + " %");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,8 +82,6 @@ public class GUIController {
                     .GET()
                     .build();
 
-
-
             HttpResponse<String> response = client.send(
                     request,
                     HttpResponse.BodyHandlers.ofString()
@@ -94,13 +93,13 @@ public class GUIController {
             om.registerModule(new JavaTimeModule());
             om.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-            List<Energy> datenListe = om.readValue(response.body(), new TypeReference<List<Energy>>() {});
+            List<EnergyUsageHourly> datenListe = om.readValue(response.body(), new TypeReference<List<EnergyUsageHourly>>() {});
 
             double sumProduced = 0;
             double sumUsed = 0;
             double sumGrid = 0;
 
-            for (Energy e : datenListe) {
+            for (EnergyUsageHourly e : datenListe) {
                 sumProduced += e.getCommunityProduced();
                 sumUsed += e.getCommunityUsed();
                 sumGrid += e.getGridUsed();

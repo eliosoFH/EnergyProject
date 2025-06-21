@@ -2,15 +2,15 @@ package com.example.frontend.dto;
 
 import java.time.LocalDateTime;
 
-public class Energy {
+public class EnergyUsageHourly {
     private LocalDateTime hour;
     private double communityProduced;
     private double communityUsed;
     private double gridUsed;
 
-    public Energy() {}
+    public EnergyUsageHourly() {}
 
-    public Energy(LocalDateTime hour, double communityProduced, double communityUsed, double gridUsed) {
+    public EnergyUsageHourly(LocalDateTime hour, double communityProduced, double communityUsed, double gridUsed) {
         this.hour = hour;
         this.communityProduced = communityProduced;
         this.communityUsed = communityUsed;

@@ -1,7 +1,6 @@
 package com.example.BackEndAPI.Controller;
 
 
-import com.example.BackEndAPI.dto.Energy;
 import com.example.BackEndAPI.repository.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;

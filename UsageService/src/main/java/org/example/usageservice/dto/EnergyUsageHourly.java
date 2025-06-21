@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EnergyStats {
+public class EnergyUsageHourly {
     @JsonProperty("produced")
     private double communityProduced;
     @JsonProperty("used")
