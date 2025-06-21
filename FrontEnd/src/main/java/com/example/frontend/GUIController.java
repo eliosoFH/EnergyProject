@@ -21,7 +21,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class GUIController {
     @FXML
-    public Label currentCommunityUsed;
+    public Label currentCommunityDepleted;
     public Label currentGridPortion;
     public Button currentRefresh;
     public DatePicker start;
@@ -61,12 +61,12 @@ public class GUIController {
             om.registerModule(new JavaTimeModule());
             CurrentPercentage data = om.readValue(response.body(), CurrentPercentage.class);
 
-            currentCommunityUsed.setText(String.format("%.2f", data.getCommunityDepleted()) + " %");
+            currentCommunityDepleted.setText(String.format("%.2f", data.getCommunityDepleted()) + " %");
             currentGridPortion.setText(String.format("%.2f", data.getGridPortion()) + " %");
 
         } catch (Exception e) {
             e.printStackTrace();
-            currentCommunityUsed.setText("Fehler beim Laden!");
+            currentCommunityDepleted.setText("Fehler beim Laden!");
             currentGridPortion.setText("Fehler beim Laden!");
         }
     }

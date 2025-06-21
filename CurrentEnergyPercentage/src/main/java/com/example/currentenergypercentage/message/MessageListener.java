@@ -28,7 +28,7 @@ public class MessageListener {
         try {
             EnergyUsageHourly data = objectMapper.readValue(message, EnergyUsageHourly.class);
 
-            if (data.getCommunityProduced() == 0) {
+            if (data.getCommunityProduced() == 0 || data.getCommunityUsed() > data.getCommunityProduced()) {
                 community_depleted = 100;
             } else {
                 community_depleted = data.getCommunityUsed()/data.getCommunityProduced()*100;
