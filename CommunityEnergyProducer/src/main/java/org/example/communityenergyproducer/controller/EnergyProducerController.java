@@ -1,16 +1,15 @@
 package org.example.communityenergyproducer.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class EnergyProducerController {
@@ -19,9 +18,22 @@ public class EnergyProducerController {
     private final RestTemplate rest = new RestTemplate();
     private final Random random = new Random();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final TaskScheduler scheduler;
 
-    public EnergyProducerController(RabbitTemplate rabbit) {
+
+    public EnergyProducerController(RabbitTemplate rabbit, TaskScheduler scheduler) {
         this.rabbit = rabbit;
+        this.scheduler = scheduler;
+    }
+
+    @PostConstruct
+    public void startScheduling() {
+        scheduleNextRun();
+    }
+
+    private void scheduleNextRun() {
+        int delay = 1000 + random.nextInt(4000); // 1–5 Sekunden
+        scheduler.schedule(this::fetchAndSendProduction, new Date(System.currentTimeMillis() + delay));
     }
 
     @Scheduled(fixedRate = 5000) // alle 5 Sekunden
@@ -44,7 +56,7 @@ public class EnergyProducerController {
             LocalDateTime sunset = LocalDateTime.parse(sunsetStr);
             LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Vienna"));
 
-            // Wetterfaktor bestimmen
+            // Wetterfaktor festlegen für spätere Berechnung
             double weatherFactor;
             if (weatherCode <= 1) {
                 weatherFactor = 1.0; // sonnig/klar
@@ -74,12 +86,13 @@ public class EnergyProducerController {
             messageMap.put("datetime", now.toString());
 
             String messageJson = objectMapper.writeValueAsString(messageMap);
-            rabbit.convertAndSend("com_energy_producer", messageJson);
+            rabbit.convertAndSend("com_energy_producer", messageJson); // An Qeue senden
 
             System.out.println("Sent production: " + messageJson + " (WCode: " + weatherCode + ")");
 
         } catch (Exception e) {
             System.err.println("Senden fehlgeschlagen: " + e.getMessage());
         }
+        scheduleNextRun();
     }
 }
