@@ -36,8 +36,10 @@ public class EnergyController {
         // @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) übergabe string wird zu datetime objekt umgewandelt
 
         return energyDatabaseRepository.findAll().stream()
-        .filter(e -> !e.getHour().isBefore(start) && !e.getHour().isAfter(end))
-        .sorted(Comparator.comparing(EnergyUsageHourlyEntity::getHour))
-        .toList();
+                .filter(e -> e.getHour().isAfter(start) && !e.getHour().isAfter(end))
+                // Stunde 16 zählt für Werte 15-16:00
+                .sorted(Comparator.comparing(EnergyUsageHourlyEntity::getHour))
+                .toList();
+
     }
 }
