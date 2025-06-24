@@ -36,7 +36,7 @@ public class EnergyProducerController {
         scheduler.schedule(this::fetchAndSendProduction, new Date(System.currentTimeMillis() + delay));
     }
 
-    @Scheduled(fixedRate = 5000) // alle 5 Sekunden
+    // @Scheduled(fixedRate = 5000) // alle 5 Sekunden
     public void fetchAndSendProduction() {
         String url = "https://api.open-meteo.com/v1/forecast?latitude=48.2&longitude=16.3&current_weather=true&daily=sunrise,sunset&timezone=Europe/Vienna";
         try {
