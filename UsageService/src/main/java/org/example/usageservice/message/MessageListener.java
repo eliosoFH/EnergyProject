@@ -1,7 +1,6 @@
 package org.example.usageservice.message;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.example.usageservice.dto.EnergyUsageHourly;
 import org.example.usageservice.repository.EnergyUsageHourlyEntity;
 import org.example.usageservice.repository.EnergyUsageDatabaseRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -11,10 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class MessageListener {
@@ -26,35 +22,30 @@ public class MessageListener {
         this.rabbit = rabbit;
     }
 
-    List<EnergyUsageHourly> list = new ArrayList<>();
-
-    boolean producedHourOver = false;
-    boolean usedHourOver = false;
-
-    double excessProduced = 0;
-    double excessUsed = 0;
-
-    private EnergyUsageHourly energyStats = new EnergyUsageHourly();
-
-    @RabbitListener(queues = "com_energy_producer")
+    @RabbitListener(queues = {"com_energy_producer", "com_energy_user"})
     public void receiveProducer(String message)  {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         try {
-            EnergyUsageHourly data = objectMapper.readValue(message, EnergyUsageHourly.class);
+            EnergyUsageHourlyEntity newData = objectMapper.readValue(message, EnergyUsageHourlyEntity.class);
 
-            initTime(data.getTimestamp());
+            LocalDateTime now = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0).plusHours(1);
+            EnergyUsageHourlyEntity currentData = repository.findById(now).orElse(null);
 
-            if(data.getTimestamp().getHour() == energyStats.getTimestamp().getHour()) {
-                energyStats.setCommunityProduced(energyStats.getCommunityProduced()+ data.getCommunityProduced());
-                System.out.println("Produced: " + energyStats);
-            } else {
-                excessProduced += data.getCommunityProduced();
-                producedHourOver = true;
-                if (usedHourOver && producedHourOver) {
-                    dbAndRabbit();
-                }
+            if (currentData == null) {
+                currentData = new EnergyUsageHourlyEntity();
+                currentData.setHour(newData.getHour().withMinute(0).withSecond(0).withNano(0).plusHours(1));
             }
+
+            currentData.setCommunityUsed(currentData.getCommunityUsed() + newData.getCommunityUsed());
+            currentData.setCommunityProduced(currentData.getCommunityProduced() + newData.getCommunityProduced());
+            if ((currentData.getCommunityUsed()-currentData.getCommunityProduced()) > 0) {
+                currentData.setGridUsed(currentData.getCommunityUsed()-currentData.getCommunityProduced());
+            }
+
+            repository.save(currentData);
+
+            rabbitPush(currentData);
 
         } catch (Exception e) {
             System.out.println("Fehler aufgetreten!");
@@ -62,68 +53,28 @@ public class MessageListener {
         }
     }
 
-    @RabbitListener(queues = "com_energy_user")
-    public void receiveUser(String message) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        try {
-            EnergyUsageHourly data = objectMapper.readValue(message, EnergyUsageHourly.class);
-
-            initTime(data.getTimestamp());
-
-            if (data.getTimestamp().getHour() == energyStats.getTimestamp().getHour()) {
-                energyStats.setCommunityUsed(energyStats.getCommunityUsed() + data.getCommunityUsed());
-                System.out.println("Used: " + energyStats);
-            } else {
-                excessUsed += data.getCommunityUsed();
-                usedHourOver = true;
-                if (usedHourOver && producedHourOver) {
-                    dbAndRabbit();
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Fehler aufgetreten!");
-        }
-    }
-
-    private void dbAndRabbit() {
-        energyStats.setGritUsed(energyStats.getCommunityUsed()-energyStats.getCommunityProduced());
-        if (energyStats.getGritUsed()<0) {
-            energyStats.setGritUsed(0);
-        }
-
-        System.out.println("DB: " + energyStats);
-
-        EnergyUsageHourlyEntity sql = new EnergyUsageHourlyEntity(energyStats.getTimestamp().plusHours(1), energyStats.getCommunityUsed(), energyStats.getCommunityProduced(), energyStats.getGritUsed());
-        repository.save(sql);
-
+    private void rabbitPush(EnergyUsageHourlyEntity currentData) {
         try {
             // send energyStats to queue
             Map<String, Object> messageMap = new HashMap<>();
-            messageMap.put("produced", energyStats.getCommunityProduced());
-            messageMap.put("used", energyStats.getCommunityUsed());
-            messageMap.put("grid", energyStats.getGritUsed());
-            messageMap.put("timestamp", energyStats.getTimestamp().plusHours(1));
+            messageMap.put("produced", currentData.getCommunityProduced());
+            messageMap.put("used", currentData.getCommunityUsed());
+            messageMap.put("grid", currentData.getGridUsed());
+            messageMap.put("timestamp", currentData.getHour());
 
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
             String messageJson = objectMapper.writeValueAsString(messageMap);
             rabbit.convertAndSend("update", messageJson);
-            System.out.println("updated");
+            System.out.println("updated" + currentData);
 
         } catch (Exception e) {
             System.out.println(e);
         }
-        energyStats = new EnergyUsageHourly();
-        energyStats.setCommunityUsed(excessUsed);
-        energyStats.setCommunityProduced(excessProduced);
-        excessUsed = 0;
-        excessProduced = 0;
     }
 
-    private void initTime(LocalDateTime date) {
-        if(energyStats.getTimestamp() == null) {
-            energyStats.setTimestamp(date.withMinute(0).withSecond(0).withNano(0));
-        }
-    }
+
+
+
+
 }

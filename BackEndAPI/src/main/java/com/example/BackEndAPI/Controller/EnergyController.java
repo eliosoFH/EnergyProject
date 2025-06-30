@@ -24,7 +24,7 @@ public class EnergyController {
 
     @GetMapping("/current")
     public CurrentPercentageEntity getCurrentHour() {
-        LocalDateTime now = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime now = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0).plusHours(1);
         return currentDataRepository.findById(now).orElse(null);
     }
 

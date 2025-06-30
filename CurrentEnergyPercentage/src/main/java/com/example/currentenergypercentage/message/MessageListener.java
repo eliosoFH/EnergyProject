@@ -42,6 +42,7 @@ public class MessageListener {
 
             CurrentPercentageEntity sql = new CurrentPercentageEntity(data.getTimestamp(), community_depleted, grid_portion);
             repository.save(sql);
+            System.out.println(sql);
 
         } catch (Exception e) {
             System.out.println(e);

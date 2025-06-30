@@ -5,20 +5,27 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDateTime;
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Table(name = "energy_usage_hourly")
 public class EnergyUsageHourlyEntity {
 
     // @ID für PK
     @Id
+    @JsonProperty("datetime")
     @Column(name = "hour", nullable = false)
     private LocalDateTime hour;
 
+    @JsonProperty("produced")
     @Column(name = "community_produced", nullable = false)
     private double communityProduced;
 
+    @JsonProperty("used")
     @Column(name = "community_used", nullable = false)
     private double communityUsed;
 
@@ -67,4 +74,13 @@ public class EnergyUsageHourlyEntity {
         this.gridUsed = gridUsed;
     }
 
+    @Override
+    public String toString() {
+        return "EnergyUsageHourlyEntity{" +
+                "hour=" + hour +
+                ", communityProduced=" + communityProduced +
+                ", communityUsed=" + communityUsed +
+                ", gridUsed=" + gridUsed +
+                '}';
+    }
 }
