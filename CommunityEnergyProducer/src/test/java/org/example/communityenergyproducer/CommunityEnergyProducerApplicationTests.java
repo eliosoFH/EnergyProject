@@ -1,31 +1,42 @@
 package org.example.communityenergyproducer;
 
+
 import org.example.communityenergyproducer.controller.EnergyProducerController;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.amqp.core.Queue;
+import org.mockito.ArgumentCaptor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.TaskScheduler;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-class CommunityEnergyProducerApplicationTest {
 
-    @Autowired
-    private Queue userQueue;
+class EnergyProducerApplicationTest {
 
-    @Autowired
-    private ThreadPoolTaskScheduler taskScheduler;
+    private RabbitTemplate rabbitTemplate;
+    private TaskScheduler scheduler;
+    private EnergyProducerController controller;
+
+    @BeforeEach
+    void setUp() {
+        rabbitTemplate = mock(RabbitTemplate.class);
+        scheduler = mock(TaskScheduler.class);
+        controller = new EnergyProducerController(rabbitTemplate, scheduler);
+    }
 
     @Test
-    void contextLoads() {
-        assertNotNull(userQueue, "Queue should be initialized");
-        assertEquals("com_energy_producer", userQueue.getName(), "Queue name should match");
-        assertTrue(userQueue.isDurable(), "Queue should be durable");
+    void testSendProductionMessage() {
 
-        assertNotNull(taskScheduler, "TaskScheduler should be initialized");
-        assertTrue(taskScheduler.getActiveCount() >= 0, "Scheduler thread pool should be active");
+        controller.fetchAndSendProduction();
+
+        ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(rabbitTemplate).convertAndSend(eq("com_energy_producer"), messageCaptor.capture());
+
+        String message = messageCaptor.getValue();
+        assertNotNull(message);
+        assertTrue(message.contains("PRODUCER"));
+        assertTrue(message.contains("produced"));
+        assertTrue(message.contains("datetime"));
     }
 }
