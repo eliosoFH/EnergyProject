@@ -1,4 +1,4 @@
-package org.example.communityenergyuser.Controller;
+package org.example.communityenergyuser.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -13,6 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * EnergyUser, der abhängig von der Tageszeit energy usage simuliert und diesen an die RabbitMQ Qeue sendet
+ * @Author Laurin
+ * @Version 02.07.2025
+ */
+
 @Service
 public class EnergyUserController {
 
@@ -26,7 +32,7 @@ public class EnergyUserController {
         this.scheduler = scheduler;
     }
 
-    @PostConstruct // Automatisch ausgeführt nach BEAN Erstellung, besser als im Konstruktor
+    @PostConstruct // Automatisch ausgeführt nach BEAN Erstellung
     public void startScheduling() {
         scheduleNextRun();
     }
