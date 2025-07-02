@@ -14,7 +14,7 @@ public class UsageServiceApplication {
 
 	@Bean
 	public Queue userQueue() {
-		return new Queue("update", true); // durable = true
+		return new Queue("com_energy_user", true); // durable = true
 	}
 
 	@Bean
@@ -24,7 +24,7 @@ public class UsageServiceApplication {
 
 	@Bean
 	public Queue updateQueue() {
-		return new Queue("com_energy_user", true);
+		return new Queue("update", true);
 	}
 
 }

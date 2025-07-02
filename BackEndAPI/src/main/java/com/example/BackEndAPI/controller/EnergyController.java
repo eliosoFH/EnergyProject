@@ -1,4 +1,4 @@
-package com.example.BackEndAPI.Controller;
+package com.example.BackEndAPI.controller;
 
 
 import com.example.BackEndAPI.repository.*;

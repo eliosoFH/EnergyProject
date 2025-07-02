@@ -34,8 +34,8 @@ public class GUIController {
     public Button historicalRefresh;
 
     public void initialize() {
-        startHour.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 0));
-        endHour.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 23));
+        startHour.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 24, 0));
+        endHour.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 24, 24));
         start.setValue(LocalDate.now());
         end.setValue(LocalDate.now());
     }
@@ -73,8 +73,17 @@ public class GUIController {
 
     public void getHistorical(ActionEvent actionEvent) {
         try {
-            LocalDateTime startDateTime = start.getValue().atTime(startHour.getValue(), 0);
-            LocalDateTime endDateTime = end.getValue().atTime(endHour.getValue(), 0);
+            LocalDateTime startDateTime;
+            LocalDateTime endDateTime;
+
+            startDateTime = start.getValue().atTime(startHour.getValue(), 0);
+
+            if(endHour.getValue() == 24) {
+                endDateTime = end.getValue().atTime(23, 0).plusHours(1);
+            } else {
+                endDateTime = end.getValue().atTime(endHour.getValue(), 0);
+            }
+
 
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
