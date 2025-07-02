@@ -20,7 +20,7 @@ class EnergyUserControllerTest {
     // TaskScheduler wird hier NICHT getestet - ist vorraussetzung im Konstruktor
     private TaskScheduler scheduler;
     // Das Controller Object dessen Funktionen getestet werden sollen
-    private org.example.communityenergyuser.Controller.EnergyUserController controller;
+    private org.example.communityenergyuser.controller.EnergyUserController controller;
 
     /**
      * Setup, welches vor jedem Testfall ausgeführt wird.
@@ -31,7 +31,7 @@ class EnergyUserControllerTest {
     void setUp() {
         rabbitTemplate = mock(RabbitTemplate.class);
         scheduler = mock(TaskScheduler.class);
-        controller = new org.example.communityenergyuser.Controller.EnergyUserController(rabbitTemplate, scheduler);
+        controller = new org.example.communityenergyuser.controller.EnergyUserController(rabbitTemplate, scheduler);
     }
 
     /**
