@@ -11,6 +11,12 @@ import org.springframework.web.client.RestTemplate;
 import java.time.*;
 import java.util.*;
 
+/**
+ * EnergyProducer, der alle 1-5 Sekunden realistische Erzeugungswerte an eine RabbitMQ Qeue sendet
+ * @Author Laurin
+ * @Version 02.07.2025
+ */
+
 @Service
 public class EnergyProducerController {
 
@@ -20,23 +26,28 @@ public class EnergyProducerController {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final TaskScheduler scheduler;
 
-
     public EnergyProducerController(RabbitTemplate rabbit, TaskScheduler scheduler) {
         this.rabbit = rabbit;
         this.scheduler = scheduler;
     }
 
-    @PostConstruct
+    @PostConstruct // Ausgeführt nach Bean Initialisierung
     public void startScheduling() {
         scheduleNextRun();
     }
 
+    /**
+     * KEIN Thread.sleep() weil:
+     * Blockiert den aktuellen Thread vollständig für die angegebene Zeit
+     * Fehleranfällig (Exception handling)
+     * Verringerte Effizienz bei Skalierung wegen künstlichem Abbruch
+     */
     private void scheduleNextRun() {
         int delay = 1000 + random.nextInt(4000); // 1–5 Sekunden
-        scheduler.schedule(this::fetchAndSendProduction, new Date(System.currentTimeMillis() + delay));
+        scheduler.schedule(this::fetchAndSendProduction, new Date(System.currentTimeMillis() + delay)); // :: Lambda kurzversion
     }
 
-    // @Scheduled(fixedRate = 5000) // alle 5 Sekunden
+    // @Scheduled(fixedRate = 5000) // alle 5 Sekunden, alte vorgehensweise
     public void fetchAndSendProduction() {
         String url = "https://api.open-meteo.com/v1/forecast?latitude=48.2&longitude=16.3&current_weather=true&daily=sunrise,sunset&timezone=Europe/Vienna";
         try {
